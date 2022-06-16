@@ -8,7 +8,7 @@ python manage.py startapp perstep ./apps/perstep
 OR
 
 mkdir -p apps && touch apps/__init__.py
-cd apps && django-admin startapp common && cd ..
+cd apps && django-admin startapp perstep && cd ..
 
 # Then do the following
 
