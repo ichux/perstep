@@ -21,3 +21,12 @@ cd apps && django-admin startapp perstep && cd ..
 
 2. Change `name = 'apps.perstep'` in 'apps > perstep > apps.py' PerstepConfig
 ```
+
+## Run unittests
+`python manage.py test apps`
+
+
+## Important
+```bash
+https://tranquil-wave-30481.herokuapp.com/ | https://git.heroku.com/tranquil-wave-30481.git
+```
