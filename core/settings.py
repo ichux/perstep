@@ -21,9 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = (
-    "442zad7b4fc0518bAf0d033d0b9ee5@3663"
-    "6d5g6d3d0039673bU017850c1d946c!4d9e"
-    "924r40a4b69bb8e1bK0bcb2ab6daf9%9200"
+    "424f0b80f87ef351856d17148cc28222d717ccedeca6c6accd3430064d"
+    "fc05b2b99afa5ae2c6103604930c605cce1d05e6817860415b2e50378a"
+    "87cba69d100524b91b74f00a80e4914d12ce2b4e88c0fe90e084bdadc8"
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -51,6 +51,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "apps.pages.apps.PagesConfig",
+    "apps.posts.apps.PostsConfig",
     "apps.perstep.apps.PerstepConfig",
     "apps.common.apps.CommonConfig",
 ]
@@ -97,10 +98,6 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },
-    "sqlite": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    },
     "psql": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "postgres",
@@ -112,30 +109,50 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
+LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": LOGS_DIR / "file.log",
+            "formatter": "app",
+        },
+        "db": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": LOGS_DIR / "db.log",
+            "formatter": "app",
+        },
+    },
+    "propagate": False,
+    "formatters": {
+        "app": {
+            "format": "%(asctime)s [%(levelname)s] (%(module)s.%(funcName)s) %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+}
 
 if DEBUG:
     THIRD_PARTY_APPS.append("django_extensions")
-    LOGGING = {
-        "version": 1,
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-            },
-        },
-        "propagate": False,
-        "loggers": {
-            "django.db.backends": {
-                "level": "DEBUG",
-            },
-        },
-        "root": {
-            "handlers": ["console"],
+
+    LOGGING["loggers"]: {
+        "django.db.backends": {
+            "level": "DEBUG",
+            "handlers": ["db"],
         },
     }
 
 else:
+    # Password validation
+    # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
     AUTH_PASSWORD_VALIDATORS = [
         {
             "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -150,6 +167,7 @@ else:
             "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
         },
     ]
+
     SECRET_KEY = os.environ.get(
         "SECRET_KEY",
         (
